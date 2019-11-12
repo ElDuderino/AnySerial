@@ -53,6 +53,21 @@ AnySerial::attach(HardwareSerial *port) {
     debug_flag = 0;
 }
 
+#ifdef USBCON
+AnySerial::AnySerial(Serial_ *port){
+    serialport.leo = port;
+    port_type = anyserial_leonardo;
+    debug_flag = 0;
+}
+
+void AnySerial::attach(Serial_ *port) {
+    serialport.leo = port;
+    port_type = anyserial_leonardo;
+    debug_flag = 0;
+}
+
+#endif
+
 // USBSerial
 #ifdef USBserial_h_
 AnySerial::AnySerial(usb_serial_class *port) {
@@ -101,6 +116,12 @@ AnySerial::attach(SoftwareSerial *port) {
 void
 AnySerial::begin(uint32_t baud) { 
     switch (port_type) {
+
+#ifdef USBCON
+    case anyserial_leonardo:
+        serialport.leo->begin(baud);
+        break;
+#endif
 #ifdef AltSoftSerial_h
         case anyserial_altsoft:
             serialport.altsoft->begin(baud);
@@ -126,6 +147,11 @@ AnySerial::begin(uint32_t baud) {
 void 
 AnySerial::end() {
     switch (port_type) {
+#ifdef USBCON
+    case anyserial_leonardo:
+        serialport.leo->end();
+        break;
+#endif
 #ifdef AltSoftSerial_h
         case anyserial_altsoft:
             serialport.altsoft->end();
@@ -152,6 +178,11 @@ int
 AnySerial::peek() {
     int ret = -1;
     switch (port_type) {
+#ifdef USBCON
+    case anyserial_leonardo:
+        ret = serialport.leo->peek();
+        break;
+#endif
 #ifdef AltSoftSerial_h
         case anyserial_altsoft:
             ret = serialport.altsoft->peek();
@@ -179,6 +210,11 @@ int
 AnySerial::read() {
     int ret = -1;
     switch (port_type) {
+#ifdef USBCON
+    case anyserial_leonardo:
+        ret = serialport.leo->read();
+        break;
+#endif
 #ifdef AltSoftSerial_h
         case anyserial_altsoft:
             ret = serialport.altsoft->read();
@@ -209,6 +245,11 @@ int
 AnySerial::available() {
     int ret = 0;
     switch (port_type) {
+#ifdef USBCON
+    case anyserial_leonardo:
+        ret = serialport.leo->available();
+        break;
+#endif
 #ifdef AltSoftSerial_h
         case anyserial_altsoft:
             ret = serialport.altsoft->available();
@@ -235,6 +276,11 @@ AnySerial::available() {
 void 
 AnySerial::flushInput() {
     switch (port_type) {
+#ifdef USBCON
+    case anyserial_leonardo:
+        //assuming it's not implemented
+        break;
+#endif
 #ifdef AltSoftSerial_h
         case anyserial_altsoft:
             serialport.altsoft->flushInput();
@@ -259,6 +305,11 @@ AnySerial::flushInput() {
 void 
 AnySerial::flushOutput() {
     switch (port_type) {
+#ifdef USBCON
+    case anyserial_leonardo:
+        //assuming it's not implemented
+        break;
+#endif
 #ifdef AltSoftSerial_h
         case anyserial_altsoft:
             serialport.altsoft->flushOutput();
@@ -285,6 +336,11 @@ bool
 AnySerial::listen() { 
     bool ret = true;
     switch (port_type) {
+#ifdef USBCON
+    case anyserial_leonardo:
+        //assuming it's not implemented
+        break;
+#endif
 #ifdef AltSoftSerial_h
         case anyserial_altsoft:
             ret = serialport.altsoft->listen();
@@ -312,6 +368,11 @@ bool
 AnySerial::isListening() { 
     bool ret = false;
     switch (port_type) {
+#ifdef USBCON
+    case anyserial_leonardo:
+        //assuming it's not implemented
+        break;
+#endif
 #ifdef AltSoftSerial_h
         case anyserial_altsoft:
             ret = serialport.altsoft->isListening();
@@ -339,6 +400,11 @@ bool
 AnySerial::overflow() { 
     bool ret = false;
     switch (port_type) {
+#ifdef USBCON
+    case anyserial_leonardo:
+        //assuming it's not implemented
+        break;
+#endif
 #ifdef AltSoftSerial_h
         case anyserial_altsoft:
             ret = serialport.altsoft->overflow();
@@ -366,6 +432,11 @@ int
 AnySerial::library_version() { 
     int ret = 0;
     switch (port_type) {
+#ifdef USBCON
+    case anyserial_leonardo:
+        //assuming it's not implemented
+        break;
+#endif
 #ifdef AltSoftSerial_h
         case anyserial_altsoft:
             ret = serialport.altsoft->library_version();
@@ -394,6 +465,11 @@ size_t
 AnySerial::write(char *str) {
     size_t ret = 0;
     switch (port_type) {
+#ifdef USBCON
+    case anyserial_leonardo:
+        ret = serialport.leo->write(str);
+        break;
+#endif
 #ifdef AltSoftSerial_h
         case anyserial_altsoft:
             ret = serialport.altsoft->write(str);
@@ -423,6 +499,11 @@ size_t
 AnySerial::write(const uint8_t *buff, size_t len) {
     size_t ret = 0;
     switch (port_type) {
+#ifdef USBCON
+    case anyserial_leonardo:
+        ret = serialport.leo->write(buff, len);
+        break;
+#endif
 #ifdef AltSoftSerial_h
         case anyserial_altsoft:
             ret = serialport.altsoft->write(buff, len);
@@ -455,6 +536,11 @@ AnySerial::~AnySerial() {
 void 
 AnySerial::writeByte(uint8_t byte) {
     switch (port_type) {
+#ifdef USBCON
+    case anyserial_leonardo:
+        serialport.leo->write(&byte, 1);
+        break;
+#endif
 #ifdef AltSoftSerial_h
         case anyserial_altsoft:
             serialport.altsoft->write(&byte, 1);
@@ -484,6 +570,11 @@ int
 AnySerial::readBytesUntil(char watch, char *buff, int len) {
     int ret = 0;
     switch(port_type) {
+#ifdef USBCON
+    case anyserial_leonardo:
+        ret = serialport.leo->readBytesUntil(watch, buff, len);
+        break;
+#endif
 #ifdef AltSoftSerial_h
         case anyserial_altsoft:
             ret = serialport.altsoft->readBytesUntil(watch, buff, len);
@@ -526,6 +617,10 @@ AnySerial::port() {
     switch (port_type) {
         case anyserial_hardware:
             return serialport.hardware;
+#ifdef USBCON
+    case anyserial_leonardo:
+            return serialport.leo;
+#endif
 #ifdef USBSerial_h_
         case anyserial_usb:
             return serialport.usb;
